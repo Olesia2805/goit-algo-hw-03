@@ -1,5 +1,6 @@
 from pathlib import Path
 import argparse
+import shutil
 
 
 def display_tree(path: Path, indent: str = "", prefix: str = ""):
@@ -26,8 +27,14 @@ def parse_argv():
 def recursive_read():
     pass
 
-def recursive_copy():
-    pass
+def recursive_copy(source: Path, destination: Path):
+    for item in source.iterdir():
+        if item.is_dir():
+            recursive_copy(item, destination)
+        else:
+            folder = destination / str(item)[str(item).rfind(".") + 1:]
+            folder.mkdir(exist_ok = True, parents = True)
+            shutil.copy2(item, folder)
 
 if __name__ == "__main__":
 
@@ -35,12 +42,12 @@ if __name__ == "__main__":
 
     source_path = Path(args.source)
     destination_path = Path(args.destination)
-
+    
     print(f"Output data: {args}")
 
-    recursive_read(source_path)
+    #recursive_read(source_path)
 
-    recursive_read(destination_path)
+    #recursive_read(destination_path)
 
     recursive_copy(source_path, destination_path)
 
