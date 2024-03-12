@@ -2,6 +2,7 @@ from pathlib import Path
 import argparse
 import shutil
 
+#help = 'py .\SortingFiles.py -S/--source "folder" (-D/--destination "folder")'
 
 def display_tree(path: Path, indent: str = "", prefix: str = ""):
     if path.is_dir():
@@ -19,15 +20,16 @@ def display_tree(path: Path, indent: str = "", prefix: str = ""):
         print(indent + prefix + str(path.name))
 
 def parse_argv():
+
     parser = argparse.ArgumentParser("Sorting Files")
+
     parser.add_argument("-S", "--source", type = Path, required = True, help = "Files that need sorting")
     parser.add_argument("-D", "--destination", type = Path, default = Path("dist"), help = "Sorting files")
+    
     return parser.parse_args()
 
-def recursive_read():
-    pass
-
 def recursive_copy(source: Path, destination: Path):
+
     for item in source.iterdir():
         if item.is_dir():
             recursive_copy(item, destination)
@@ -35,6 +37,7 @@ def recursive_copy(source: Path, destination: Path):
             folder = destination / str(item)[str(item).rfind(".") + 1:]
             folder.mkdir(exist_ok = True, parents = True)
             shutil.copy2(item, folder)
+
 
 if __name__ == "__main__":
 
@@ -45,12 +48,14 @@ if __name__ == "__main__":
     
     print(f"Output data: {args}")
 
-    #recursive_read(source_path)
+    try:
+        recursive_copy(source_path, destination_path)
 
-    #recursive_read(destination_path)
+        display_tree(args.source)
 
-    recursive_copy(source_path, destination_path)
+        display_tree(args.destination)
 
-    display_tree(args.source)
-
-    display_tree(args.destination)
+    except PermissionError:
+        print("You don't have permission!")
+    except FileNotFoundError:
+        print("Folder is not found!")
