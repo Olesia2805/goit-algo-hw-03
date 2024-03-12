@@ -25,4 +25,5 @@ def draw_koch_curve(order, size = 300):
 
     window.mainloop()
 
-draw_koch_curve(3)
+if __name__ == "__main__":
+    draw_koch_curve(3)
